@@ -22,13 +22,17 @@ document.addEventListener ("DOMContentLoaded", () => {
 
 })
 
-function consultCryptocurrencies() {
+ async function consultCryptocurrencies() {
     const url = " https://min-api.cryptocompare.com/data/top/mktcapfull?limit=10&tsym=USD";
 
-    fetch(url)
-    .then(answer => answer.json ())
-    .then(result => cryptoObtain(result.Data))
-    .then(cryptoCurrencies => cryptocurrenciesSelect(cryptoCurrencies))
+    try {
+        const answer = await fetch(url);
+        const result = await answer.json();
+        const cryptocurrencies = await cryptoObtain(result.Data);
+        cryptocurrenciesSelect(cryptocurrencies);
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 function cryptocurrenciesSelect (cryptoCurrencies) {
@@ -82,17 +86,22 @@ function showAlert (msj) {
     }
 }
 
-function APIConsult(){
+async function APIConsult(){
     const {currency, cryptocurrency } = searchObj;
     const url = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${cryptocurrency}&tsyms=${currency}`
     // const url = `https://min-api.cryptocompare.com/data/price?fsym=BTC&tsyms=USD,JPY,EUR`   // delete BTC from web and add variables js, also USD,JPY,EUR.. not done up
 
     showSpinner();
-fetch(url)
-    .then(answer => answer.json())
-    .then(quote => {
+
+
+    try {
+        const answer = await fetch(url);
+        const quote = await answer.json();
         showQuoteHTML(quote.DISPLAY[cryptocurrency][currency]);   //dynamic way [] []
-    })
+
+    } catch (error) {
+        console.log(error)
+    }
 
 }
 
